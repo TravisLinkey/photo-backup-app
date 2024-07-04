@@ -1,10 +1,10 @@
 const basePath = process.env.EXPO_PUBLIC_BACKEND_URL;
 
-export const getPresignedURL = async (fileName: string) => {
+export const getPresignedURL = async (fileName: string, folderName: string) => {
   const options = {
     headers: {
       "X-Filename": fileName,
-      "X-Foldername": "testFolder",
+      "X-Foldername": folderName,
       "Access-Control-Allow-Origin": "*",
     },
     method: "GET"
@@ -24,16 +24,14 @@ export const getPresignedURL = async (fileName: string) => {
 }
 
 export const uploadFiles = async (url: string, file: any) => {
-  console.log("File:", file.base64);
-  console.log("type:", typeof file.base64);
-
   const options = {
     method: "PUT",
     headers: {
       "Access-Control-Allow-Origin": "*",
       Accept: "*/*",
       ContentType: file.mimeType,
-      ContentEncoding: 'base64'
+      ContentEncoding: 'base64',
+      "x-amz-server-side-encryption": "aws:kms"
     },
     body: file.base64,
   };

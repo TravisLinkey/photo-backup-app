@@ -1,14 +1,15 @@
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useEffect, useState } from "react";
 import { CustomButton } from "@/components/CustomButton";
 import { ImageList } from "@/components/ImageList";
+import { Text, TextInput, View } from "react-native";
 import { getPresignedURL, uploadFiles } from "@/api";
+import { useEffect, useState } from "react";
 
 
 export default function HomeScreen() {
   const [images, setImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [message, setMessage] = useState<string>("");
+  const [folderName, setFolderName] = useState<string>("");
 
   useEffect(() => {
     if (message !== "") {
@@ -34,12 +35,13 @@ export default function HomeScreen() {
 
   const submit = async () => {
     images.map(async (image) => {
-      const {url} = await getPresignedURL(image.fileName as string);
+      const {url} = await getPresignedURL(image.fileName as string, folderName);
       const response = await uploadFiles(url, image);
       console.log(response);
     });
 
     setMessage("Successfully uploaded photos!");
+    setImages([]);
   }
 
   return (
@@ -48,6 +50,7 @@ export default function HomeScreen() {
         <TextInput 
           className="text-xl my-4 p-2 bg-gray-200 text-bold text-blue-500 border-2 border-black rounded-lg mb-4"
           placeholder="Directory name"
+          onChangeText={setFolderName}
         />
         <CustomButton
           function={pickImage}
@@ -57,7 +60,7 @@ export default function HomeScreen() {
           images={images}
         />
         <Text>{message}</Text>
-        {images.length > 0 &&
+        {images.length > 0 && folderName.length > 0 &&
           <CustomButton
             function={() => submit()}
             text="Submit"

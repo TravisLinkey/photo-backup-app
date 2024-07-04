@@ -7,7 +7,7 @@
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "env-cmd -f .prod.env expo start --web",
+    "web": "env-cmd -f .env expo start --web",
     "test": "jest --watchAll",
     "lint": "expo lint"
   },
@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
+    "env-cmd": "^10.1.0",
     "expo": "~51.0.17",
     "expo-constants": "~16.0.2",
     "expo-file-system": "^17.0.1",
