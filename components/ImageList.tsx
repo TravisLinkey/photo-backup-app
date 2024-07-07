@@ -1,5 +1,5 @@
+import { Image, View } from "react-native";
 import { ImagePickerAsset } from "expo-image-picker";
-import { Image, ScrollView, View } from "react-native";
 
 
 type ImageListProps = {

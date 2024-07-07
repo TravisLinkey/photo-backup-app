@@ -2,6 +2,7 @@ import * as ImagePicker from "expo-image-picker";
 import { CustomButton } from "@/components/CustomButton";
 import { ImageList } from "@/components/ImageList";
 import { Text, TextInput, View } from "react-native";
+import { convertToBinary } from "@/utils/convert-file-to-binary";
 import { getPresignedURL, uploadFiles } from "@/api";
 import { useEffect, useState } from "react";
 
@@ -20,7 +21,7 @@ export default function HomeScreen() {
   }, [message])
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const  result = await ImagePicker.launchImageLibraryAsync({
       allowsMultipleSelection: true,
       base64: true,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -35,8 +36,12 @@ export default function HomeScreen() {
 
   const submit = async () => {
     images.map(async (image) => {
-      const {url} = await getPresignedURL(image.fileName as string, folderName);
-      const response = await uploadFiles(url, image);
+      const { url } = await getPresignedURL(image.fileName as string, folderName);
+
+      console.log("IMAGE: ", image);
+      const fileBuffer = convertToBinary(image);
+
+      const response = await uploadFiles(url, fileBuffer);
       console.log(response);
     });
 
@@ -47,7 +52,7 @@ export default function HomeScreen() {
   return (
     <View className="flex items-center w-full h-screen bg-gray-200">
       <View className="bg-white border-1 rounded-xl px-4 h-screen">
-        <TextInput 
+        <TextInput
           className="text-xl my-4 p-2 bg-gray-200 text-bold text-blue-500 border-2 border-black rounded-lg mb-4"
           placeholder="Directory name"
           onChangeText={setFolderName}
